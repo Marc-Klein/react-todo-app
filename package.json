@@ -8,7 +8,7 @@
     "spj": "npx sort-package-json@1.48 package.json",
     "dev": "react-scripts start",
     "stylelint": "stylelint 'src/*.{js,jsx}'",
-    "dev-server": "nodemon nodemon.js"
+    "dev-server": "nodemon server.js"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",

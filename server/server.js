@@ -11,7 +11,7 @@ app.listen(port, ()=>{
 })
 
 app.get("/", (request, response) => {
-	response.send("Server says, hello!")
+	response.send("Server says, hi!")
 })
 
 //use async syntax to use await
