@@ -18,7 +18,7 @@ app.get("/", (request, response) => {
 //use async syntax to use await
 app.get("/api/todos", async (request, response) => {
 	//first read the file
-	const data = await readFile(fileName, "utf8");
+	const data = await readFile(file, "utf8");
 	//then u need to parse it
 	const parsedData = JSON.parse(data);
 	response.send(parsedData);
