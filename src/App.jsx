@@ -12,6 +12,7 @@ const App = () => {
 	return (
 		<div>
 			<h1>{value}</h1>
+			<a href="/login">Please Login Here!</a>
 			<form
 				onSubmit={event_ => {
 					event_.preventDefault();
