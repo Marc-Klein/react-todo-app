@@ -1,12 +1,10 @@
 import cors from "cors";
 import express from "express";
-
-import dotenv from "dotenv";
-dotenv.config();
-
-import { readFile, writeFile } from "fs/promises";
-import { v4 as uuid } from "uuid";
-import { connectDatabase, getTodoCollection } from "./database.js";
+import "dotenv/config";
+import mongoose from "mongoose";
+// import { readFile, writeFile } from "fs/promises";
+// import { v4 as uuid } from "uuid";
+// import { connectDatabase, getTodoCollection } from "./database.js";
 
 //Error if no MONGODB_ATLAS_URI is determined
 if (!process.env.MONGODB_ATLAS_URI) {
@@ -25,24 +23,32 @@ app.get("/", (request, response) => {
 
 const DATABASE_URI = "./database.json";
 
-app.get("/api/todos", async (request, response) => {
+app.get("/api/todos", async (request, response, next) => {
 	const data = await readFile(DATABASE_URI, "utf8");
 	const json = JSON.parse(data);
 	response.json(json.todos);
 });
 
-app.post("/api/todos", async (request, response) => {
-	const collection = getTodoCollection();
+app.post("/api/todos", async (request, response, next) => {
+	try {
+		//import getTodoCollection and declare as collection
+		//replaces the await read and the parsing of the json file
+		const collection = getTodoCollection();
 
-	const todo = {
-		...request.body,
-		isChecked: false,
-		id: uuid(),
-	};
+		const todo = {
+			...request.body,
+			isChecked: false,
+			//mongo db has own ids
+			// id: uuid(),
+		};
+		//weve to wait because the methods of Mongo DB are async
+		//insertOne is from Mongo dB
+		const insertedTodoID = await collection.insertOne(todo);
 
-	const insertedTodoID = await collection.insertOne(todo);
-
-	response.status(201).send(`Todo with ID: ${insertedTodoID.insertedId} created`);
+		response.status(201).send(`Todo with ID: ${insertedTodoID.insertedId} created`);
+	} catch (error_) {
+		next(error_);
+	}
 });
 
 app.delete("/api/todos", async (request, response) => {
