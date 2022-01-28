@@ -2,11 +2,7 @@ import cors from "cors";
 import express from "express";
 import "dotenv/config";
 import mongoose from "mongoose";
-// import { readFile, writeFile } from "fs/promises";
-// import { v4 as uuid } from "uuid";
-// import { connectDatabase, getTodoCollection } from "./database.js";
-
-//Error if no MONGODB_ATLAS_URI is determined
+import Todo from "./todo.model.js";
 if (!process.env.MONGODB_ATLAS_URI) {
 	throw new Error("No MONGODB_ATLAS_URI dotenv variable");
 }
@@ -24,9 +20,12 @@ app.get("/", (request, response) => {
 const DATABASE_URI = "./database.json";
 
 app.get("/api/todos", async (request, response, next) => {
-	const data = await readFile(DATABASE_URI, "utf8");
-	const json = JSON.parse(data);
-	response.json(json.todos);
+	try {
+		const todos = new Todo.find({});
+		response.json(todos);
+	} catch (error_) {
+		next(error_);
+	}
 });
 
 app.post("/api/todos", async (request, response, next) => {
