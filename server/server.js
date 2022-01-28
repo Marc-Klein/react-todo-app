@@ -30,21 +30,14 @@ app.get("/api/todos", async (request, response, next) => {
 
 app.post("/api/todos", async (request, response, next) => {
 	try {
-		//import getTodoCollection and declare as collection
-		//replaces the await read and the parsing of the json file
-		const collection = getTodoCollection();
-
-		const todo = {
+		const todo = new Todo({
 			...request.body,
 			isChecked: false,
-			//mongo db has own ids
-			// id: uuid(),
-		};
-		//weve to wait because the methods of Mongo DB are async
-		//insertOne is from Mongo dB
-		const insertedTodoID = await collection.insertOne(todo);
+		});
 
-		response.status(201).send(`Todo with ID: ${insertedTodoID.insertedId} created`);
+		const mongoDbResponse = await todo.save(); //todo[] why not solved ?
+
+		response.status(201).json(mongoDbResponse);
 	} catch (error_) {
 		next(error_);
 	}
